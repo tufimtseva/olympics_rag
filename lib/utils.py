@@ -2,11 +2,26 @@ import glob
 
 
 def get_docs() -> list[str]:
-    docs = []
-    for path in glob.glob("data/*.txt"):
-        with open(path, 'r') as file:
-            docs.append(file.read())
-    return docs
+    chunks = []
+    current_chunk = []
+    path = glob.glob("olympic_games_chunks.txt")
+    print(path)
+
+    with open(path[0], "r") as file:
+        for line in file:
+            line = line.strip()
+            if line.startswith("Chunk") and line.endswith(":"):
+                if current_chunk:
+                    chunks.append(" ".join(current_chunk))
+                    current_chunk = []
+            else:
+                current_chunk.append(line)
+        if current_chunk:
+            chunks.append(" ".join(current_chunk))
+
+    print(f"Total chunks read: {len(chunks)}")
+    return chunks[:50]
+
 
 
 def tokenize(text):

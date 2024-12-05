@@ -7,7 +7,8 @@ from groq_llm import LLM
 os.environ['GROQ_API_KEY'] = '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'
 def build_chat_ui(docs: list[str]):
     params = {
-        "BM25": False
+        "BM25": False,
+        "dense_retriever": False
     }
     bm_25_search = st.checkbox("Search by keyword")
     if bm_25_search:
@@ -57,3 +58,8 @@ if __name__ == "__main__":
 # When was the current three-medal format introduced ?
 
 # tell me the most interesting fact about Olympics?
+
+# tell me about the three-medal type
+
+# what medal types where previously?
+
