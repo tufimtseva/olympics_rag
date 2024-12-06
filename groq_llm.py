@@ -1,6 +1,6 @@
 from litellm import completion
 from retriever import Retriever
-from rerankers import Reranker
+from bert_retriever import BertRetriever
 
 class LLM:
     PROMPT = "You are a helpful assistant that can answer questions. " \
@@ -10,15 +10,21 @@ class LLM:
     def __init__(self, docs: list[str], params: dict[str, bool]):
         self.docs = docs
         self.retriever = Retriever(docs)
+        self.bert_retriever = BertRetriever(docs)
         self.params = params
 
     def answer_question(self, query):
-        context = self.retriever.get_relevant_docs(query) if self.params[
-            "BM25"] else self.docs[:50]
-        if self.params["BM25"] or self.params["dense_retriever"]:
+        if self.params["BM25_retriever"]:
+            context = self.retriever.get_relevant_docs(query)
+        elif self.params["sBERT_retriever"]:
+            context = self.bert_retriever.get_relevant_docs(query)
+        else:
+            context = self.docs[:50]
+        if self.params["BM25_retriever"] or self.params["sBERT_retriever"]:
             reranker = Reranker('cross-encoder', model_type='cross-encoder')
             sorted_context = reranker.rank(query, context)
             context = [r.document.text for r in sorted_context.top_k(3)]
+            
         response = completion(
             model="groq/llama3-8b-8192",
             messages=[
