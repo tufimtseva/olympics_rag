@@ -5,6 +5,8 @@ from lib.utils import get_docs
 from groq_llm import LLM
 
 os.environ['GROQ_API_KEY'] = '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'
+
+
 def build_chat_ui(docs: list[str]):
     params = {
         "BM25": False

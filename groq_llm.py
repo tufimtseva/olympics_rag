@@ -1,6 +1,6 @@
 from litellm import completion
 from retriever import Retriever
-
+from bert_retriever import BertRetriever
 
 class LLM:
     PROMPT = "You are a helpful assistant that can answer questions. " \
@@ -10,11 +10,12 @@ class LLM:
     def __init__(self, docs: list[str], params: dict[str, bool]):
         self.docs = docs
         self.retriever = Retriever(docs)
+        self.bert_retriever = BertRetriever(docs)
         self.params = params
 
     def answer_question(self, query):
         context = self.retriever.get_relevant_docs(query) if self.params[
-            "BM25"] else self.docs
+            "BM25"] else self.bert_retriever.get_relevant_docs(query)
         response = completion(
             model="groq/llama3-8b-8192",
             messages=[
