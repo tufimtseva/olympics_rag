@@ -66,9 +66,13 @@ if __name__ == "__main__":
 # tell me the most interesting fact about Olympics?
 
 # Are there any legends related to the origin of the Games?
+# Are there any legends related to the Games?
+# Is there any mystery related to the Games?
 
 # Why were the events in 1900 and 1904 considered unsuccessful?
 
 # tell me about the three-medal type
 
 # what medal types where previously?
+
+# How did the early 20th-century expositions impact the popularity of the Olympics?
