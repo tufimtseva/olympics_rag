@@ -1,6 +1,8 @@
 from litellm import completion
 from retriever import Retriever
 from bert_retriever import BertRetriever
+from rerankers import Reranker
+
 
 class LLM:
     PROMPT = "You are a helpful assistant that can answer questions. " \
