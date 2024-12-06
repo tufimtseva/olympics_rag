@@ -9,7 +9,7 @@ class Retriever:
         tokenized_docs = [tokenize(doc) for doc in self.docs]
         self.bm25 = BM25Okapi(tokenized_docs)
 
-    def get_relevant_docs(self, query: str, n=3) -> list[str]:
+    def get_relevant_docs(self, query: str, n=10) -> list[str]:
         tokenized_query = tokenize(query)
         scores = self.bm25.get_scores(tokenized_query)
         print(scores)

@@ -68,3 +68,7 @@ if __name__ == "__main__":
 # Are there any legends related to the origin of the Games?
 
 # Why were the events in 1900 and 1904 considered unsuccessful?
+
+# tell me about the three-medal type
+
+# what medal types where previously?

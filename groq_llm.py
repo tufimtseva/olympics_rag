@@ -2,7 +2,6 @@ from litellm import completion
 from retriever import Retriever
 from bert_retriever import BertRetriever
 
-
 class LLM:
     PROMPT = "You are a helpful assistant that can answer questions. " \
              "If you don not know the answer say that you do not know it." \
@@ -21,6 +20,11 @@ class LLM:
             context = self.bert_retriever.get_relevant_docs(query)
         else:
             context = self.docs[:50]
+        if self.params["BM25_retriever"] or self.params["sBERT_retriever"]:
+            reranker = Reranker('cross-encoder', model_type='cross-encoder')
+            sorted_context = reranker.rank(query, context)
+            context = [r.document.text for r in sorted_context.top_k(3)]
+            
         response = completion(
             model="groq/llama3-8b-8192",
             messages=[
