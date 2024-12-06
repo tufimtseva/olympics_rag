@@ -9,11 +9,16 @@ os.environ['GROQ_API_KEY'] = 'gsk_Ir6v6cj7lUe29tv2b6PlWGdyb3FYaMDf9tt4m3xW6Zuqyy
 
 def build_chat_ui(docs: list[str]):
     params = {
-        "BM25": False
+        "BM25_retriever": False,
+        "sBERT_retriever": False
     }
-    bm_25_search = st.checkbox("Search by keyword")
-    if bm_25_search:
-        params["BM25"] = True
+    with st.sidebar:
+        option = st.selectbox("Search type", ("None", "By keyword", "Semantic"))
+    print("Search option:", option)
+    if option == "By keyword":
+        params["BM25_retriever"] = True
+    elif option == "Semantic":
+        params["sBERT_retriever"] = True
     print("params now ", params)
 
     if "messages" not in st.session_state:
@@ -59,3 +64,7 @@ if __name__ == "__main__":
 # When was the current three-medal format introduced ?
 
 # tell me the most interesting fact about Olympics?
+
+# Are there any legends related to the origin of the Games?
+
+# Why were the events in 1900 and 1904 considered unsuccessful?
