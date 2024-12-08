@@ -12,7 +12,7 @@ def get_wikipedia_page_text(page_title, lang="en"):
     Returns:
         str: Text content of the page or an error message.
     """
-    user_agent = "khrystyna.dol@gmail.com)"
+    user_agent = "khrystyna.dol@gmail.com"
     wiki = wikipediaapi.Wikipedia(user_agent=user_agent, language=lang)
     page = wiki.page(page_title)
 
