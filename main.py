@@ -114,5 +114,14 @@ if __name__ == "__main__":
 # Keyword better than semantic
 # Is there any mystery related to the Games?
 
+# Keyword better than semantic
+# Tell me about auspices Games
+
+# Keyword better than semantic
+# How did specific countries respond to international policies on segregation during competitions?
+
 # Semantic better than keyword
 # How did the early 20th-century expositions impact the popularity of the Olympics?
+
+# Semantic better than keyword
+# What role did educational philosophy play in shaping the ideology of early athletic competitions?
