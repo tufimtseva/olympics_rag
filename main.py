@@ -1,13 +1,13 @@
 import os
 import streamlit as st
 from streamlit_chat import message
-from lib.utils import get_docs
+from lib.utils import get_docs_and_headers
 from groq_llm import LLM
 
 os.environ['GROQ_API_KEY'] = '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'
 
 
-def build_chat_ui(docs: list[str]):
+def build_chat_ui(docs: list[str], chunk_header_map: dict[str, str]):
     params = {
         "BM25_retriever": False,
         "sBERT_retriever": False
@@ -30,24 +30,56 @@ def build_chat_ui(docs: list[str]):
             message(m["content"], is_user=True, key=f"user_{i}")
         else:
             message(m["content"], key=f"assistant_{i}")
+            if "sources" in m:
+                st.markdown("### Sources:")
+                cols = st.columns(len(m["sources"]))
+                for idx, cont_i in enumerate(m["sources"]):
+                    with cols[idx]:
+                        st.caption(f"Closest subtopic:\n {cont_i['closest_subtopic']}"
+                                   f"\nContent:\n {cont_i['content_snippet']}...")
+                        st.markdown(f"Link: {cont_i['link']}")
 
-    llm = LLM(docs, params)
+    llm = LLM(docs, chunk_header_map, params)
     query = st.chat_input("Say something")
     if query:
         st.session_state.messages.append({"role": "user", "content": query})
         message(query, is_user=True,
                 key=f"user_input_{len(st.session_state.messages)}")
 
-        answer = llm.answer_question(query)
-        st.session_state.messages.append(
-            {"role": "assistant", "content": answer})
-        message(answer,
-                key=f"assistant_response_{len(st.session_state.messages)}")
+        answer, context, headers = llm.answer_question(query)
+
+        message(answer, key=f"assistant_response_{len(st.session_state.messages)}")
+        if params["BM25_retriever"] or params["sBERT_retriever"]:
+            st.markdown("### Sources:")
+            cols = st.columns(len(context))
+
+            sources = []
+            for i, source in enumerate(context):
+                with cols[i]:
+                    st.caption(f"Closest subtopic:\n {headers[i].replace('_', ' ')}"
+                               f"\nContent:\n {source[:20].replace('**', '')}...")
+                    st.markdown(f"Link: https://en.wikipedia.org/wiki/Olympic_Games#{headers[i]}")
+                    sources.append({
+                        "closest_subtopic": headers[i].replace('_', ' '),
+                        "content_snippet": source[:20].replace("**", ""),
+                        "link": f"https://en.wikipedia.org/wiki/Olympic_Games#{headers[i]}"
+                    })
+
+            st.session_state.messages.append({
+                "role": "assistant",
+                "content": answer,
+                "sources": sources
+            })
+        else:
+            st.session_state.messages.append({
+                "role": "assistant",
+                "content": answer
+            })
 
 
 if __name__ == "__main__":
-    docs = get_docs()
-    build_chat_ui(docs)
+    all_docs, all_chunk_header_map = get_docs_and_headers()
+    build_chat_ui(all_docs, all_chunk_header_map)
 
 # to run with web ui: streamlit run /Users/tanya/nlp/main.py
 
@@ -61,12 +93,14 @@ if __name__ == "__main__":
 
 # medalists
 # The current three-medal format was introduced at the 1904 Olympics.
-# When was the current three-medal format introduced ?
+# When was the current three-medal format introduced?
 
 # tell me the most interesting fact about Olympics?
 
 # Are there any legends related to the origin of the Games?
 # Are there any legends related to the Games?
+
+# Keyword better than semantic
 # Is there any mystery related to the Games?
 
 # Why were the events in 1900 and 1904 considered unsuccessful?
@@ -75,4 +109,10 @@ if __name__ == "__main__":
 
 # what medal types where previously?
 
+# Samples:
+
+# Keyword better than semantic
+# Is there any mystery related to the Games?
+
+# Semantic better than keyword
 # How did the early 20th-century expositions impact the popularity of the Olympics?
