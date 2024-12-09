@@ -47,39 +47,46 @@ def build_chat_ui(docs: list[str], chunk_header_map: dict[str, str]):
     llm = LLM(docs, chunk_header_map, params)
     query = st.chat_input("Say something")
     if query:
-        st.session_state.messages.append({"role": "user", "content": query})
-        message(query, is_user=True,
-                key=f"user_input_{len(st.session_state.messages)}")
+        if 'GROQ_API_KEY' in os.environ:
+            st.session_state.messages.append({"role": "user", "content": query})
+            message(query, is_user=True,
+                    key=f"user_input_{len(st.session_state.messages)}")
 
-        answer, context, headers = llm.answer_question(query)
+            answer, context, headers = llm.answer_question(query)
 
-        message(answer, key=f"assistant_response_{len(st.session_state.messages)}")
-        if params["BM25_retriever"] or params["sBERT_retriever"]:
-            st.markdown("### Sources:")
-            cols = st.columns(len(context))
+            message(answer, key=f"assistant_response_{len(st.session_state.messages)}")
+            if params["BM25_retriever"] or params["sBERT_retriever"]:
+                st.markdown("### Sources:")
+                cols = st.columns(len(context))
 
-            sources = []
-            for i, source in enumerate(context):
-                with cols[i]:
-                    st.caption(f"Closest subtopic:\n {headers[i].replace('_', ' ')}"
-                               f"\nContent:\n {source[:20].replace('**', '')}...")
-                    st.markdown(f"Link: https://en.wikipedia.org/wiki/Olympic_Games#{headers[i]}")
-                    sources.append({
-                        "closest_subtopic": headers[i].replace('_', ' '),
-                        "content_snippet": source[:20].replace("**", ""),
-                        "link": f"https://en.wikipedia.org/wiki/Olympic_Games#{headers[i]}"
-                    })
+                sources = []
+                for i, source in enumerate(context):
+                    with cols[i]:
+                        st.caption(f"Closest subtopic:\n {headers[i].replace('_', ' ')}"
+                                   f"\nContent:\n {source[:20].replace('**', '')}...")
+                        st.markdown(f"Link: https://en.wikipedia.org/wiki/Olympic_Games#{headers[i]}")
+                        sources.append({
+                            "closest_subtopic": headers[i].replace('_', ' '),
+                            "content_snippet": source[:20].replace("**", ""),
+                            "link": f"https://en.wikipedia.org/wiki/Olympic_Games#{headers[i]}"
+                        })
 
-            st.session_state.messages.append({
-                "role": "assistant",
-                "content": answer,
-                "sources": sources
-            })
+                st.session_state.messages.append({
+                    "role": "assistant",
+                    "content": answer,
+                    "sources": sources
+                })
+            else:
+                st.session_state.messages.append({
+                    "role": "assistant",
+                    "content": answer
+                })
         else:
-            st.session_state.messages.append({
-                "role": "assistant",
-                "content": answer
-            })
+            with st.sidebar:
+                st.markdown(
+                    "<span style='color:red; font-weight:bold;'>⚠️ Please, enter your LLM key first</span>",
+                    unsafe_allow_html=True,
+                )
 
 
 if __name__ == "__main__":
