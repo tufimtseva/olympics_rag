@@ -40,4 +40,3 @@ if __name__ == "__main__":
 
     page_text = get_wikipedia_page_text(title)
     save_text_to_file(page_text, path)
-    # print(page_text[:500])

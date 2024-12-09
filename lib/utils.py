@@ -1,5 +1,6 @@
 import glob
 
+CONTEXT_PREFIX_LEN = 30
 
 def get_docs_and_headers() -> tuple[list[str], dict[str, str]]:
     """
@@ -28,7 +29,7 @@ def get_docs_and_headers() -> tuple[list[str], dict[str, str]]:
                 if current_chunk:
                     chunk_text = " ".join(current_chunk)
                     chunks.append(chunk_text)
-                    chunk_header_map[chunk_text[:30]] = current_header
+                    chunk_header_map[chunk_text[:CONTEXT_PREFIX_LEN]] = current_header
                     current_chunk = []
                 current_header = ""
             elif line.startswith("Header:"):
@@ -39,10 +40,10 @@ def get_docs_and_headers() -> tuple[list[str], dict[str, str]]:
         if current_chunk:
             chunk_text = " ".join(current_chunk)
             chunks.append(chunk_text)
-            chunk_header_map[chunk_text[:30]] = current_header
+            chunk_header_map[chunk_text[:CONTEXT_PREFIX_LEN]] = current_header
 
     print(f"Total chunks read: {len(chunks)}")
-    return chunks[:50], chunk_header_map
+    return chunks, chunk_header_map
 
 
 def tokenize(text):
