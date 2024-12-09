@@ -16,7 +16,6 @@ def build_chat_ui(docs: list[str], chunk_header_map: dict[str, str]):
         )
 
         if llm_key:
-            st.write("Your LLM key: ", llm_key)
             os.environ['GROQ_API_KEY'] = llm_key
 
     print("Search option:", option)
