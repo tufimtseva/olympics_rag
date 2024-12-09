@@ -10,6 +10,11 @@ def build_chat_ui(docs: list[str], chunk_header_map: dict[str, str]):
         "sBERT_retriever": False
     }
     with st.sidebar:
+        st.text("A question-answering system designed to deliver informative "
+                "responses based on an external document —"
+                " a Wikipedia article about the Olympic Games — leveraging the "
+                "retrieval-augmented generation (RAG) method for enhanced accuracy "
+                "and contextual relevance.")
         option = st.selectbox("Search type", ("None", "By keyword", "Semantic"))
         llm_key = st.text_input(
             "Enter your LLM key for groq model 👇",
