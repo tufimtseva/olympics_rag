@@ -21,8 +21,10 @@ def build_chat_ui(docs: list[str], chunk_header_map: dict[str, str]):
     print("Search option:", option)
     if option == "By keyword":
         params["BM25_retriever"] = True
+        params["sBERT_retriever"] = False
     elif option == "Semantic":
         params["sBERT_retriever"] = True
+        params["BM25_retriever"] = False
     print("params now ", params)
 
     if "messages" not in st.session_state:
