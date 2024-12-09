@@ -15,7 +15,7 @@ class BertRetriever:
         self.model = SentenceTransformer("all-MiniLM-L6-v2")
         self.doc_embeddings = self.model.encode(docs, convert_to_tensor=True)
 
-    def get_relevant_docs(self, query: str, n=10) -> list[str]:
+    def get_relevant_docs(self, query: str, n=5) -> list[str]:
         """
         Retrieve the top-n most relevant documents for a query.
 
