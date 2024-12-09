@@ -39,9 +39,6 @@ def chunk_text_by_themes(text, headings, similarity_threshold=0.5):
     current_header_idx = 0
 
     for i in range(1, len(sentences)):
-        # print("Heading:", headings[current_header_idx + 1].replace("_", " "),
-        #       "\nSentence:", sentences[i],
-        #       "\n")
         if_max_min_header = False
         while not if_max_min_header:
             if current_header_idx + 1 < len(headings):
@@ -55,7 +52,6 @@ def chunk_text_by_themes(text, headings, similarity_threshold=0.5):
             else:
                 break
         similarity = util.cos_sim(embeddings[i - 1], embeddings[i]).item()
-        # print(similarity)
         if similarity > similarity_threshold:
             current_chunk.append(sentences[i])
         else:

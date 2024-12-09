@@ -12,7 +12,5 @@ class Retriever:
     def get_relevant_docs(self, query: str, n=10) -> list[str]:
         tokenized_query = tokenize(query)
         scores = self.bm25.get_scores(tokenized_query)
-        print(scores)
         top_n = np.argsort(scores)[::-1][:n]
-        print(top_n)
         return [self.docs[i] for i in top_n]

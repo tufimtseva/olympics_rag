@@ -4,9 +4,6 @@ from streamlit_chat import message
 from lib.utils import get_docs_and_headers
 from groq_llm import LLM
 
-os.environ['GROQ_API_KEY'] = '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'
-
-
 def build_chat_ui(docs: list[str], chunk_header_map: dict[str, str]):
     params = {
         "BM25_retriever": False,
@@ -14,6 +11,14 @@ def build_chat_ui(docs: list[str], chunk_header_map: dict[str, str]):
     }
     with st.sidebar:
         option = st.selectbox("Search type", ("None", "By keyword", "Semantic"))
+        llm_key = st.text_input(
+            "Enter your LLM key for groq model 👇",
+        )
+
+        if llm_key:
+            st.write("Your LLM key: ", llm_key)
+            os.environ['GROQ_API_KEY'] = llm_key
+
     print("Search option:", option)
     if option == "By keyword":
         params["BM25_retriever"] = True
@@ -80,48 +85,3 @@ def build_chat_ui(docs: list[str], chunk_header_map: dict[str, str]):
 if __name__ == "__main__":
     all_docs, all_chunk_header_map = get_docs_and_headers()
     build_chat_ui(all_docs, all_chunk_header_map)
-
-# to run with web ui: streamlit run /Users/tanya/nlp/main.py
-
-# intro
-# Over 14,000 athletes competed at the 2020 Summer Olympics and 2022 Winter Olympics combined, in 40 different sports and 448 events.
-# How many sportsmen participated at the 2020 Summer Olympics and 2022 Winter Olympics?
-
-# host nations
-# By 2032, the Olympic Games will have been hosted by 47 cities in 23 countries
-# How many countries will host Olympics by 2032?
-
-# medalists
-# The current three-medal format was introduced at the 1904 Olympics.
-# When was the current three-medal format introduced?
-
-# tell me the most interesting fact about Olympics?
-
-# Are there any legends related to the origin of the Games?
-# Are there any legends related to the Games?
-
-# Keyword better than semantic
-# Is there any mystery related to the Games?
-
-# Why were the events in 1900 and 1904 considered unsuccessful?
-
-# tell me about the three-medal type
-
-# what medal types where previously?
-
-# Samples:
-
-# Keyword better than semantic
-# Is there any mystery related to the Games?
-
-# Keyword better than semantic
-# Tell me about auspices Games
-
-# Keyword better than semantic
-# How did specific countries respond to international policies on segregation during competitions?
-
-# Semantic better than keyword
-# How did the early 20th-century expositions impact the popularity of the Olympics?
-
-# Semantic better than keyword
-# What role did educational philosophy play in shaping the ideology of early athletic competitions?
