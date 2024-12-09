@@ -43,7 +43,7 @@ def get_docs_and_headers() -> tuple[list[str], dict[str, str]]:
             chunk_header_map[chunk_text[:CONTEXT_PREFIX_LEN]] = current_header
 
     print(f"Total chunks read: {len(chunks)}")
-    return chunks[:70], chunk_header_map
+    return chunks[:40], chunk_header_map
 
 
 def tokenize(text):
